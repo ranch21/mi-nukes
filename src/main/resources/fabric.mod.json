@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "mi_nukes",
+  "version": "${version}",
+  "name": "MI-Nukes",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/mi-nukes/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.ranch.miNukes.MiNukes"
+    ]
+  },
+  "mixins": [
+    "mi-nukes.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "modern_industrialization": "1.8.6",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
