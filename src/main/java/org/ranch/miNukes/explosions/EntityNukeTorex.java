@@ -1,8 +1,6 @@
 package org.ranch.miNukes.explosions;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.sound.SoundManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
@@ -11,7 +9,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -36,10 +33,11 @@ public class EntityNukeTorex extends Entity {
 	public double rollerSize = 1;
 	public double heat = 1;
 	public double lastSpawnY = - 1;
-	public ArrayList<Cloudlet> cloudlets = new ArrayList();
+	public ArrayList<Cloudlet> cloudlets = new ArrayList<>();
 	//public static int cloudletLife = 200;
 
 	public boolean didPlaySound = false;
+	public boolean didThrow = false;
 	public boolean didShake = false;
 
 	public EntityNukeTorex(World world) {
@@ -123,13 +121,20 @@ public class EntityNukeTorex extends Entity {
 					cloudlets.add(cloud);
 				}
 
-				if (!didPlaySound) {
-					PlayerEntity player = MinecraftClient.getInstance().player;
-					if (player != null && player.distanceTo(this) < (this.age * 1.5 + 1) * 1.5) {
+				PlayerEntity player = MinecraftClient.getInstance().player;
+				if (player != null && player.distanceTo(this) < (this.age * 1.5 + 1) * 1.5) {
+					if (!didPlaySound) {
 						this.getWorld().playSound(
 								this.getX(), this.getY(), this.getZ(),
 								MiNukes.NUKE_SOUND_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
 						didPlaySound = true;
+					}
+					if (!didThrow) {
+						Vec3d pushDir = player.getPos().subtract(this.getPos());
+						pushDir = pushDir.normalize().multiply(3);
+						pushDir = new Vec3d(pushDir.x, 1, pushDir.z);
+						player.addVelocity(pushDir);
+						didThrow = true;
 					}
 				}
 			}
@@ -192,7 +197,7 @@ public class EntityNukeTorex extends Entity {
 		}
 
 		if (!this.getWorld().isClient() && this.age > maxAge) {
-			this.discard(); // Equivalent to setDead() in modern versions
+			this.discard();
 		}
 	}
 
