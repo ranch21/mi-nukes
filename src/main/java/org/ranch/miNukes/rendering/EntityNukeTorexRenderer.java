@@ -6,6 +6,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -34,16 +35,28 @@ public class EntityNukeTorexRenderer extends EntityRenderer<EntityNukeTorex> {
 			renderCloudlet(entity, cloudlet, matrices, vertexConsumers, tickDelta, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 		}
 
+		PlayerEntity player = MinecraftClient.getInstance().player;
+
+		if (player != null && player.distanceTo(entity) < (entity.age * 1.5 + 1) * 1.5) {
+			if (!entity.didPlaySound) {
+				entity.getWorld().playSound(
+						entity.getX(), entity.getY(), entity.getZ(),
+						MiNukes.NUKE_SOUND_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+				entity.didPlaySound = true;
+			}
+		}
+
 		if(entity.age < 101) renderFlashes(entity, 0.5f, matrices, vertexConsumers);
 		if(entity.age < 10 && System.currentTimeMillis() - MiNukes.flashTimestamp > 1_000) MiNukes.flashTimestamp = System.currentTimeMillis();
 		if(entity.didPlaySound && !entity.didShake && System.currentTimeMillis() - MiNukes.shakeTimestamp > 1_000) {
 			MiNukes.shakeTimestamp = System.currentTimeMillis();
 			entity.didShake = true;
-			PlayerEntity player = MinecraftClient.getInstance().player;
 			player.hurtTime = 15;
 			player.maxHurtTime = 15;
 			//player.attackedAtYaw = 0F;
 		}
+
+
 
 		//super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
 	}

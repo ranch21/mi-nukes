@@ -14,12 +14,18 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Triple;
 import org.ranch.miNukes.MiNukes;
 import org.ranch.miNukes.Util;
+import org.ranch.miNukes.client.MiNukesClient;
 import org.ranch.miNukes.compat.Vec3;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.ranch.miNukes.MiNukes.TOREX;
 
 /*
  * Toroidial Convection Simulation Explosion Effect
@@ -36,12 +42,13 @@ public class EntityNukeTorex extends Entity {
 	public ArrayList<Cloudlet> cloudlets = new ArrayList<>();
 	//public static int cloudletLife = 200;
 
+	public HashMap<PlayerEntity, Boolean> players = new HashMap<>();
+
 	public boolean didPlaySound = false;
-	public boolean didThrow = false;
 	public boolean didShake = false;
 
 	public EntityNukeTorex(World world) {
-		super(MiNukes.TOREX, world);
+		super(TOREX, world);
 		//this.ignoreFrustumCheck = true;
 		//this.setSize(1F, 50F);
 	}
@@ -120,23 +127,6 @@ public class EntityNukeTorex extends Entity {
 					cloud.setScale(7F, 2F).setMotion(this.age > 15 ? 0.75 : 0);
 					cloudlets.add(cloud);
 				}
-
-				PlayerEntity player = MinecraftClient.getInstance().player;
-				if (player != null && player.distanceTo(this) < (this.age * 1.5 + 1) * 1.5) {
-					if (!didPlaySound) {
-						this.getWorld().playSound(
-								this.getX(), this.getY(), this.getZ(),
-								MiNukes.NUKE_SOUND_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
-						didPlaySound = true;
-					}
-					if (!didThrow) {
-						Vec3d pushDir = player.getPos().subtract(this.getPos());
-						pushDir = pushDir.normalize().multiply(3);
-						pushDir = new Vec3d(pushDir.x, 1, pushDir.z);
-						player.addVelocity(pushDir);
-						didThrow = true;
-					}
-				}
 			}
 
 			// Spawn ring clouds
@@ -178,6 +168,27 @@ public class EntityNukeTorex extends Entity {
 						cloud.setScale(0.125F * (float)(cs), 3F * (float)(cs));
 						cloudlets.add(cloud);
 					}
+				}
+			}
+			for (PlayerEntity player : getWorld().getPlayers()) {
+				if (player.distanceTo(this) < 250) {
+					players.putIfAbsent(player, false);
+				}
+			}
+
+			for (Map.Entry<PlayerEntity, Boolean> entry : players.entrySet()) {
+				PlayerEntity player = entry.getKey();
+				Boolean didThrow = entry.getValue();
+
+				if (player != null && player.distanceTo(this) < (this.age * 1.5 + 1) * 1.5) {
+					if (!didThrow) {
+						Vec3d pushDir = player.getPos().subtract(this.getPos());
+						pushDir = pushDir.normalize().multiply(3);
+						pushDir = new Vec3d(pushDir.x, 1, pushDir.z);
+						player.addVelocity(pushDir);
+						didThrow = true;
+					}
+					players.put(player, didThrow);
 				}
 			}
 
@@ -275,14 +286,12 @@ public class EntityNukeTorex extends Entity {
 
 	@Override
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
-		didPlaySound = nbt.getBoolean("didPlaySound");
-		didShake = nbt.getBoolean("didShake");
+
 	}
 
 	@Override
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
-		nbt.putBoolean("didPlaySound", didPlaySound);
-		nbt.putBoolean("didShake", didShake);
+
 	}
 
 	public class Cloudlet {

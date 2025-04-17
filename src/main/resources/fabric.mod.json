@@ -10,6 +10,9 @@
   "icon": "assets/mi-nukes/icon.png",
   "environment": "*",
   "entrypoints": {
+    "client": [
+      "org.ranch.miNukes.client.MiNukesClient"
+    ],
     "main": [
       "org.ranch.miNukes.MiNukes"
     ]

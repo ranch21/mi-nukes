@@ -71,7 +71,7 @@ public class EntityNukeExplosion extends EntityExplosionChunkloading {
 			//radiate(2_500_000F / (this.age * 5 + 1), this.length * 2);
 		}
 
-		dealDamage(this.getWorld(), this.getX(), this.getY(), this.getZ(), this.length * 2, 70, this);
+		dealDamage(this.getWorld(), this.getX(), this.getY(), this.getZ(), this.length * 2, 50, this);
 
 		if (explosion == null) {
 			explosion = new ExplosionNuke(getWorld(), (int) getX(), (int) getY(), (int) getZ(), strength, speed, length);

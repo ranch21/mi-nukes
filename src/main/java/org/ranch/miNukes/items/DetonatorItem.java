@@ -37,7 +37,6 @@ public class DetonatorItem extends Item {
 				nbt.putInt("x", pos.getX());
 				nbt.putInt("y", pos.getY());
 				nbt.putInt("z", pos.getZ());
-				MinecraftClient.getInstance().player.sendMessage(Text.of("Linked Nuke"));
 			}
 
 		}
