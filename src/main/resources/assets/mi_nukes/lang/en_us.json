@@ -1,6 +1,7 @@
 {
   "item.mi_nukes.detonator": "Detonator",
   "item.mi_nukes.goggles": "Goggles",
+  "death.attack.nuclear_blast": "%1$s was torn apart by a nuclear blast.",
   "itemGroup.mi_nukes.item_group": "MI Nukes"
 }
 

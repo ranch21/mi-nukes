@@ -2,12 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "   ",
-    "SRS",
+    "GRG",
     "   "
   ],
   "key": {
-    "S": {
-      "tag": "minecraft:tinted_glass"
+    "G": {
+      "item": "minecraft:tinted_glass"
     },
     "R": {
       "item": "modern_industrialization:rubber_sheet"

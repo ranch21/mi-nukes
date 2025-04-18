@@ -1,29 +1,21 @@
 package org.ranch.miNukes.explosions;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Triple;
-import org.ranch.miNukes.MiNukes;
 import org.ranch.miNukes.Util;
-import org.ranch.miNukes.client.MiNukesClient;
 import org.ranch.miNukes.compat.Vec3;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.ranch.miNukes.MiNukes.TOREX;
 
@@ -40,9 +32,6 @@ public class EntityNukeTorex extends Entity {
 	public double heat = 1;
 	public double lastSpawnY = - 1;
 	public ArrayList<Cloudlet> cloudlets = new ArrayList<>();
-	//public static int cloudletLife = 200;
-
-	public HashMap<PlayerEntity, Boolean> players = new HashMap<>();
 
 	public boolean didPlaySound = false;
 	public boolean didShake = false;
@@ -168,27 +157,6 @@ public class EntityNukeTorex extends Entity {
 						cloud.setScale(0.125F * (float)(cs), 3F * (float)(cs));
 						cloudlets.add(cloud);
 					}
-				}
-			}
-			for (PlayerEntity player : getWorld().getPlayers()) {
-				if (player.distanceTo(this) < 250) {
-					players.putIfAbsent(player, false);
-				}
-			}
-
-			for (Map.Entry<PlayerEntity, Boolean> entry : players.entrySet()) {
-				PlayerEntity player = entry.getKey();
-				Boolean didThrow = entry.getValue();
-
-				if (player != null && player.distanceTo(this) < (this.age * 1.5 + 1) * 1.5) {
-					if (!didThrow) {
-						Vec3d pushDir = player.getPos().subtract(this.getPos());
-						pushDir = pushDir.normalize().multiply(3);
-						pushDir = new Vec3d(pushDir.x, 1, pushDir.z);
-						player.addVelocity(pushDir);
-						didThrow = true;
-					}
-					players.put(player, didThrow);
 				}
 			}
 

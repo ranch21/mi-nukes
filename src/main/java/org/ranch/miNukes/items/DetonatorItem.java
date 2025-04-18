@@ -1,14 +1,13 @@
 package org.ranch.miNukes.items;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -57,9 +56,10 @@ public class DetonatorItem extends Item {
 
 				Identifier id = Registries.BLOCK.getId(block);
 				if (id.getNamespace().equals("modern_industrialization") && id.getPath().equals("nuke")) {
+					world.setBlockState(new BlockPos(savedPos), Blocks.AIR.getDefaultState());
+
 					MiNukes.nuke(140, savedPos.toCenterPos(), world);
 
-					// Clear the position
 					nbt.remove("x");
 					nbt.remove("y");
 					nbt.remove("z");

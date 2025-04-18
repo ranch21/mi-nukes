@@ -7,7 +7,7 @@
   "authors": ["Ranch"],
   "contact": {"Ranch": "mods@mynameisjeffito.dev"},
   "license": "GNU GENERAL PUBLIC LICENSE",
-  "icon": "assets/mi-nukes/icon.png",
+  "icon": "assets/mi_nukes/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
